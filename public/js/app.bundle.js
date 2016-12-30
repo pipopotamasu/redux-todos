@@ -59,21 +59,21 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 190);
 	
-	var _reducers = __webpack_require__(/*! ./reducers */ 224);
+	var _reducers = __webpack_require__(/*! ./reducers */ 223);
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _App = __webpack_require__(/*! ./App */ 223);
+	var _App = __webpack_require__(/*! ./App */ 225);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
-	var _actions = __webpack_require__(/*! ./actions */ 225);
+	var _actions = __webpack_require__(/*! ./actions */ 230);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var store = (0, _redux.createStore)(_reducers2.default);
 	store.dispatch((0, _actions.addTodo)('Hello World!'));
-	console.log(store.getState());
+	store.dispatch((0, _actions.addTodo)('Hello World!'));
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -24487,35 +24487,6 @@
 
 /***/ },
 /* 223 */
-/*!***********************!*\
-  !*** ./src/js/App.js ***!
-  \***********************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var App = function App() {
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'Hello World!'
-	  );
-	};
-	
-	exports.default = App;
-
-/***/ },
-/* 224 */
 /*!**********************************!*\
   !*** ./src/js/reducers/index.js ***!
   \**********************************/
@@ -24529,7 +24500,7 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 190);
 	
-	var _todos = __webpack_require__(/*! ./todos */ 226);
+	var _todos = __webpack_require__(/*! ./todos */ 224);
 	
 	var _todos2 = _interopRequireDefault(_todos);
 	
@@ -24539,29 +24510,7 @@
 	exports.default = todoApp;
 
 /***/ },
-/* 225 */
-/*!*********************************!*\
-  !*** ./src/js/actions/index.js ***!
-  \*********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var nextTodoId = 0;
-	
-	var addTodo = exports.addTodo = function addTodo(text) {
-	  return {
-	    type: 'ADD_TODO',
-	    id: nextTodoId++,
-	    text: text
-	  };
-	};
-
-/***/ },
-/* 226 */
+/* 224 */
 /*!**********************************!*\
   !*** ./src/js/reducers/todos.js ***!
   \**********************************/
@@ -24600,6 +24549,223 @@
 	};
 	
 	exports.default = todos;
+
+/***/ },
+/* 225 */
+/*!***********************!*\
+  !*** ./src/js/App.js ***!
+  \***********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _VisibleTodoList = __webpack_require__(/*! ./containers/VisibleTodoList */ 226);
+	
+	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
+	
+	var _AddTodo = __webpack_require__(/*! ./containers/AddTodo */ 229);
+	
+	var _AddTodo2 = _interopRequireDefault(_AddTodo);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var App = function App() {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(_AddTodo2.default, null),
+	    _react2.default.createElement(_VisibleTodoList2.default, null)
+	  );
+	};
+	
+	exports.default = App;
+
+/***/ },
+/* 226 */
+/*!**********************************************!*\
+  !*** ./src/js/containers/VisibleTodoList.js ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
+	
+	var _TodoList = __webpack_require__(/*! ../components/TodoList */ 227);
+	
+	var _TodoList2 = _interopRequireDefault(_TodoList);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return { todos: state.todos };
+	};
+	
+	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps)(_TodoList2.default);
+	exports.default = VisibleTodoList;
+
+/***/ },
+/* 227 */
+/*!***************************************!*\
+  !*** ./src/js/components/TodoList.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Todo = __webpack_require__(/*! ./Todo */ 228);
+	
+	var _Todo2 = _interopRequireDefault(_Todo);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TodoList = function TodoList(_ref) {
+	  var todos = _ref.todos;
+	  return _react2.default.createElement(
+	    'ul',
+	    null,
+	    todos.map(function (todo) {
+	      return _react2.default.createElement(_Todo2.default, _extends({
+	        key: todo.id
+	      }, todo));
+	    })
+	  );
+	};
+	
+	TodoList.PropTypes = {
+	  todos: _react.PropTypes.arrayOf(_react.PropTypes.shape({
+	    id: _react.PropTypes.number.isRequired,
+	    text: _react.PropTypes.string.isRequired
+	  }).isRequired).isRequired
+	};
+	
+	exports.default = TodoList;
+
+/***/ },
+/* 228 */
+/*!***********************************!*\
+  !*** ./src/js/components/Todo.js ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Todo = function Todo(_ref) {
+	  var text = _ref.text;
+	  return _react2.default.createElement(
+	    'li',
+	    null,
+	    text
+	  );
+	};
+	
+	Todo.propType = {
+	  text: _react.PropTypes.string.isRequired
+	};
+	
+	exports.default = Todo;
+
+/***/ },
+/* 229 */
+/*!**************************************!*\
+  !*** ./src/js/containers/AddTodo.js ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
+	
+	var _actions = __webpack_require__(/*! ../actions */ 230);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var AddTodo = function AddTodo(_ref) {
+	  var dispatch = _ref.dispatch;
+	
+	  var input = void 0;
+	
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement('input', { ref: function ref(node) {
+	        input = node;
+	      } }),
+	    _react2.default.createElement(
+	      'button',
+	      { onClick: function onClick() {
+	          dispatch((0, _actions.addTodo)(input.value));
+	          input.value = '';
+	        } },
+	      'Add Todo'
+	    )
+	  );
+	};
+	
+	AddTodo = (0, _reactRedux.connect)()(AddTodo);
+	exports.default = AddTodo;
+
+/***/ },
+/* 230 */
+/*!*********************************!*\
+  !*** ./src/js/actions/index.js ***!
+  \*********************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var nextTodoId = 0;
+	
+	var addTodo = exports.addTodo = function addTodo(text) {
+	  return {
+	    type: 'ADD_TODO',
+	    id: nextTodoId++,
+	    text: text
+	  };
+	};
 
 /***/ }
 /******/ ]);

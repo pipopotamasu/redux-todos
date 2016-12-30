@@ -8,7 +8,8 @@ import { addTodo } from './actions'
 
 let store = createStore(todo);
 store.dispatch(addTodo('Hello World!'))
-console.log(store.getState())
+store.dispatch(addTodo('Hello World!'))
+
 
 render(
   <Provider store={store}>
