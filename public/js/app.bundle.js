@@ -63,17 +63,21 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _App = __webpack_require__(/*! ./App */ 225);
+	var _App = __webpack_require__(/*! ./components/App */ 226);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
-	var _actions = __webpack_require__(/*! ./actions */ 228);
+	var _actions = __webpack_require__(/*! ./actions */ 230);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var store = (0, _redux.createStore)(_reducers2.default);
-	store.dispatch((0, _actions.addTodo)('Hello World!'));
-	store.dispatch((0, _actions.addTodo)('Hello World!'));
+	
+	store.dispatch((0, _actions.addTodo)('Hello React!'));
+	store.dispatch((0, _actions.addTodo)('Hello Redux!'));
+	store.dispatch((0, _actions.toggleTodo)(0));
+	
+	console.log(store.getState());
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -24504,9 +24508,13 @@
 	
 	var _todos2 = _interopRequireDefault(_todos);
 	
+	var _visibilityFilter = __webpack_require__(/*! ./visibilityFilter */ 225);
+	
+	var _visibilityFilter2 = _interopRequireDefault(_visibilityFilter);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var todoApp = (0, _redux.combineReducers)({ todos: _todos2.default });
+	var todoApp = (0, _redux.combineReducers)({ todos: _todos2.default, visibilityFilter: _visibilityFilter2.default });
 	exports.default = todoApp;
 
 /***/ },
@@ -24564,9 +24572,35 @@
 
 /***/ },
 /* 225 */
-/*!***********************!*\
-  !*** ./src/js/App.js ***!
-  \***********************/
+/*!*********************************************!*\
+  !*** ./src/js/reducers/visibilityFilter.js ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var visibilityFilter = function visibilityFilter() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case 'SET_VISIBILITY_FILTER':
+	      return action.filter;
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = visibilityFilter;
+
+/***/ },
+/* 226 */
+/*!**********************************!*\
+  !*** ./src/js/components/App.js ***!
+  \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24579,13 +24613,17 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _VisibleTodoList = __webpack_require__(/*! ./containers/VisibleTodoList */ 226);
+	var _VisibleTodoList = __webpack_require__(/*! ../containers/VisibleTodoList */ 227);
 	
 	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
 	
-	var _AddTodo = __webpack_require__(/*! ./containers/AddTodo */ 229);
+	var _AddTodo = __webpack_require__(/*! ../containers/AddTodo */ 231);
 	
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
+	
+	var _Footer = __webpack_require__(/*! ./Footer */ 232);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -24594,14 +24632,15 @@
 	    'div',
 	    null,
 	    _react2.default.createElement(_AddTodo2.default, null),
-	    _react2.default.createElement(_VisibleTodoList2.default, null)
+	    _react2.default.createElement(_VisibleTodoList2.default, null),
+	    _react2.default.createElement(_Footer2.default, null)
 	  );
 	};
 	
 	exports.default = App;
 
 /***/ },
-/* 226 */
+/* 227 */
 /*!**********************************************!*\
   !*** ./src/js/containers/VisibleTodoList.js ***!
   \**********************************************/
@@ -24615,16 +24654,31 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _TodoList = __webpack_require__(/*! ../components/TodoList */ 227);
+	var _TodoList = __webpack_require__(/*! ../components/TodoList */ 228);
 	
 	var _TodoList2 = _interopRequireDefault(_TodoList);
 	
-	var _actions = __webpack_require__(/*! ../actions */ 228);
+	var _actions = __webpack_require__(/*! ../actions */ 230);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var getVisibleTodos = function getVisibleTodos(todos, filter) {
+	  switch (filter) {
+	    case 'SHOW_ALL':
+	      return todos;
+	    case 'SHOW_COMPLETED':
+	      return todos.filter(function (t) {
+	        return t.completed;
+	      });
+	    case 'SHOW_ACTIVE':
+	      return todos.filter(function (t) {
+	        return !t.completed;
+	      });
+	  }
+	};
+	
 	var mapStateToProps = function mapStateToProps(state) {
-	  return { todos: state.todos };
+	  return { todos: getVisibleTodos(state.todos, state.visibilityFilter) };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -24639,7 +24693,7 @@
 	exports.default = VisibleTodoList;
 
 /***/ },
-/* 227 */
+/* 228 */
 /*!***************************************!*\
   !*** ./src/js/components/TodoList.js ***!
   \***************************************/
@@ -24657,7 +24711,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Todo = __webpack_require__(/*! ./Todo */ 230);
+	var _Todo = __webpack_require__(/*! ./Todo */ 229);
 	
 	var _Todo2 = _interopRequireDefault(_Todo);
 	
@@ -24692,7 +24746,48 @@
 	exports.default = TodoList;
 
 /***/ },
-/* 228 */
+/* 229 */
+/*!***********************************!*\
+  !*** ./src/js/components/Todo.js ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Todo = function Todo(_ref) {
+	  var onClick = _ref.onClick,
+	      completed = _ref.completed,
+	      text = _ref.text;
+	  return _react2.default.createElement(
+	    'li',
+	    {
+	      onClick: onClick,
+	      style: { textDecoration: completed ? 'line-through' : 'none' }
+	    },
+	    text
+	  );
+	};
+	
+	Todo.propTypes = {
+	  onClick: _react.PropTypes.func.isRequired,
+	  completed: _react.PropTypes.bool.isRequired,
+	  text: _react.PropTypes.string.isRequired
+	};
+	
+	exports.default = Todo;
+
+/***/ },
+/* 230 */
 /*!*********************************!*\
   !*** ./src/js/actions/index.js ***!
   \*********************************/
@@ -24719,9 +24814,16 @@
 	    id: id
 	  };
 	};
+	
+	var setVisibilityFilter = exports.setVisibilityFilter = function setVisibilityFilter(filter) {
+	  return {
+	    type: 'SET_VISIBILITY_FILTER',
+	    filter: filter
+	  };
+	};
 
 /***/ },
-/* 229 */
+/* 231 */
 /*!**************************************!*\
   !*** ./src/js/containers/AddTodo.js ***!
   \**************************************/
@@ -24739,7 +24841,7 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _actions = __webpack_require__(/*! ../actions */ 228);
+	var _actions = __webpack_require__(/*! ../actions */ 230);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -24769,9 +24871,99 @@
 	exports.default = AddTodo;
 
 /***/ },
-/* 230 */
+/* 232 */
+/*!*************************************!*\
+  !*** ./src/js/components/Footer.js ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _FilterLink = __webpack_require__(/*! ../containers/FilterLink */ 233);
+	
+	var _FilterLink2 = _interopRequireDefault(_FilterLink);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Footer = function Footer() {
+	  return _react2.default.createElement(
+	    'p',
+	    null,
+	    'Show:',
+	    " ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_ALL' },
+	      'All'
+	    ),
+	    ", ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_ACTIVE' },
+	      'Active'
+	    ),
+	    ", ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_COMPLETED' },
+	      'Completed'
+	    )
+	  );
+	};
+	
+	exports.default = Footer;
+
+/***/ },
+/* 233 */
+/*!*****************************************!*\
+  !*** ./src/js/containers/FilterLink.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
+	
+	var _actions = __webpack_require__(/*! ../actions */ 230);
+	
+	var _Link = __webpack_require__(/*! ../components/Link */ 234);
+	
+	var _Link2 = _interopRequireDefault(_Link);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state, ownProps) {
+	  return { active: ownProps.filter === state.visibilityFilter };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+	  return {
+	    onClick: function onClick() {
+	      dispatch((0, _actions.setVisibilityFilter)(ownProps.filter));
+	    }
+	  };
+	};
+	
+	var FilterLink = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Link2.default);
+	
+	exports.default = FilterLink;
+
+/***/ },
+/* 234 */
 /*!***********************************!*\
-  !*** ./src/js/components/Todo.js ***!
+  !*** ./src/js/components/Link.js ***!
   \***********************************/
 /***/ function(module, exports, __webpack_require__) {
 
@@ -24787,26 +24979,38 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Todo = function Todo(_ref) {
-	  var onClick = _ref.onClick,
-	      completed = _ref.completed,
-	      text = _ref.text;
+	var Link = function Link(_ref) {
+	  var active = _ref.active,
+	      children = _ref.children,
+	      _onClick = _ref.onClick;
+	
+	  if (active) {
+	    return _react2.default.createElement(
+	      'span',
+	      null,
+	      children
+	    );
+	  }
+	
 	  return _react2.default.createElement(
-	    'li',
-	    {
-	      onClick: onClick,
-	      style: { textDecoration: completed ? 'line-through' : 'none' } },
-	    text
+	    'a',
+	    { href: '#',
+	      onClick: function onClick(e) {
+	        e.preventDefault();
+	        _onClick();
+	      }
+	    },
+	    children
 	  );
 	};
 	
-	Todo.propTypes = {
-	  onClick: _react.PropTypes.func.isRequired,
-	  completed: _react.PropTypes.bool.isRequired,
-	  text: _react.PropTypes.string.isRequired
+	Link.propTypes = {
+	  active: _react.PropTypes.bool.isRequired,
+	  children: _react.PropTypes.node.isRequired,
+	  onClick: _react.PropTypes.func.isRequired
 	};
 	
-	exports.default = Todo;
+	exports.default = Link;
 
 /***/ }
 /******/ ]);
