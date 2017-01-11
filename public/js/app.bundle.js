@@ -65,7 +65,7 @@
 	
 	var _actions = __webpack_require__(/*! ./actions */ 225);
 	
-	var _App = __webpack_require__(/*! ./components/App */ 224);
+	var _App = __webpack_require__(/*! ./components/App */ 226);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
@@ -73,8 +73,8 @@
 	
 	var store = (0, _redux.createStore)(_reducers2.default);
 	
-	store.dispatch((0, _actions.addTodo)('Hello World!'));
-	store.dispatch((0, _actions.addTodo)('Hello World!'));
+	// store.dispatch(addTodo('Hello World!'))
+	// store.dispatch(toggleTodo(0))
 	
 	console.log(store.getState());
 	
@@ -24503,7 +24503,7 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 190);
 	
-	var _todos = __webpack_require__(/*! ./todos */ 226);
+	var _todos = __webpack_require__(/*! ./todos */ 224);
 	
 	var _todos2 = _interopRequireDefault(_todos);
 	
@@ -24514,6 +24514,87 @@
 
 /***/ },
 /* 224 */
+/*!**********************************!*\
+  !*** ./src/js/reducers/todos.js ***!
+  \**********************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var todo = function todo(state, action) {
+	  switch (action.type) {
+	    case 'ADD_TODO':
+	      return {
+	        id: action.id,
+	        text: action.text,
+	        completed: false
+	      };
+	    case 'TOGGLE_TODO':
+	      if (state.id !== action.id) {
+	        return state;
+	      }
+	      return Object.assign({}, state, {
+	        completed: !state.completed
+	      });
+	    default:
+	      return state;
+	  }
+	};
+	
+	var todos = function todos() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case 'ADD_TODO':
+	      return [].concat(_toConsumableArray(state), [todo(undefined, action)]);
+	    case 'TOGGLE_TODO':
+	      return state.map(function (t) {
+	        return todo(t, action);
+	      });
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = todos;
+
+/***/ },
+/* 225 */
+/*!*********************************!*\
+  !*** ./src/js/actions/index.js ***!
+  \*********************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var nextTodoId = 0;
+	var addTodo = exports.addTodo = function addTodo(text) {
+	  return {
+	    type: 'ADD_TODO',
+	    id: nextTodoId++,
+	    text: text
+	  };
+	};
+	
+	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
+	  return {
+	    type: 'TOGGLE_TODO',
+	    id: id
+	  };
+	};
+
+/***/ },
+/* 226 */
 /*!**********************************!*\
   !*** ./src/js/components/App.js ***!
   \**********************************/
@@ -24551,69 +24632,6 @@
 	exports.default = App;
 
 /***/ },
-/* 225 */
-/*!*********************************!*\
-  !*** ./src/js/actions/index.js ***!
-  \*********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var nextTodoId = 0;
-	var addTodo = exports.addTodo = function addTodo(text) {
-	  return {
-	    type: 'ADD_TODO',
-	    id: nextTodoId++,
-	    text: text
-	  };
-	};
-
-/***/ },
-/* 226 */
-/*!**********************************!*\
-  !*** ./src/js/reducers/todos.js ***!
-  \**********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	var todo = function todo(state, action) {
-	  switch (action.type) {
-	    case 'ADD_TODO':
-	      return {
-	        id: action.id,
-	        text: action.text
-	      };
-	    default:
-	      return state;
-	  }
-	};
-	
-	var todos = function todos() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    case 'ADD_TODO':
-	      return [].concat(_toConsumableArray(state), [todo(undefined, action)]);
-	    default:
-	      return state;
-	
-	  }
-	};
-	
-	exports.default = todos;
-
-/***/ },
 /* 227 */
 /*!**********************************************!*\
   !*** ./src/js/containers/VisibleTodoList.js ***!
@@ -24632,14 +24650,25 @@
 	
 	var _TodoList2 = _interopRequireDefault(_TodoList);
 	
+	var _actions = __webpack_require__(/*! ../actions */ 225);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return { todos: state.todos };
 	};
 	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    onTodoClick: function onTodoClick(id) {
+	      console.log(id);
+	      dispatch((0, _actions.toggleTodo)(id));
+	    }
+	  };
+	};
+	
 	// TodoListのPropsとして、stateのtodosを渡せるようにしている
-	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps)(_TodoList2.default);
+	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_TodoList2.default);
 	exports.default = VisibleTodoList;
 
 /***/ },
@@ -24668,14 +24697,19 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var TodoList = function TodoList(_ref) {
-	  var todos = _ref.todos;
+	  var todos = _ref.todos,
+	      onTodoClick = _ref.onTodoClick;
 	  return _react2.default.createElement(
 	    'ul',
 	    null,
 	    todos.map(function (todo) {
 	      return _react2.default.createElement(_Todo2.default, _extends({
 	        key: todo.id
-	      }, todo));
+	      }, todo, {
+	        onClick: function onClick() {
+	          return onTodoClick(todo.id);
+	        }
+	      }));
 	    })
 	  );
 	};
@@ -24684,7 +24718,8 @@
 	  todos: _react.PropTypes.arrayOf(_react.PropTypes.shape({
 	    id: _react.PropTypes.number.isRequired,
 	    text: _react.PropTypes.string.isRequired
-	  }).isRequired).isRequired
+	  }).isRequired).isRequired,
+	  onTodoClick: _react.PropTypes.func.isRequired
 	};
 	
 	exports.default = TodoList;
@@ -24709,16 +24744,22 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Todo = function Todo(_ref) {
-	  var text = _ref.text;
+	  var onClick = _ref.onClick,
+	      completed = _ref.completed,
+	      text = _ref.text;
 	  return _react2.default.createElement(
 	    'li',
-	    null,
+	    {
+	      onClick: onClick,
+	      style: { textDecoration: completed ? 'line-through' : 'none' } },
 	    text
 	  );
 	};
 	
 	Todo.PropTypes = {
-	  text: _react.PropTypes.string.isRequired
+	  text: _react.PropTypes.string.isRequired,
+	  completed: _react.PropTypes.string.isRequired,
+	  onClick: _react.PropTypes.func.isRequired
 	};
 	
 	exports.default = Todo;
@@ -24754,7 +24795,6 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    '// input\u5909\u6570\u306B\u3001input\u8981\u7D20\u3092\u683C\u7D0D',
 	    _react2.default.createElement('input', { ref: function ref(node) {
 	        input = node;
 	      } }),

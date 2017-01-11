@@ -7,7 +7,7 @@ let AddTodo = ({ dispatch }) => {
 
   return (
     <div>
-    // input変数に、input要素を格納
+      {/* input変数に、input要素を格納 */}
       <input ref={(node) => {
         input = node
       }} />
