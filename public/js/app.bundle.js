@@ -73,10 +73,11 @@
 	
 	var store = (0, _redux.createStore)(_reducers2.default);
 	
-	// store.dispatch(addTodo('Hello World!'))
+	// store.dispatch(addTodo('hoge'))
 	// store.dispatch(toggleTodo(0))
-	
-	console.log(store.getState());
+	// store.dispatch(setVisibilityFilter('SHOW_COMPLETED'))
+	// store.dispatch(addTodo('hoge'))
+	// console.log(store.getState())
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -24507,9 +24508,13 @@
 	
 	var _todos2 = _interopRequireDefault(_todos);
 	
+	var _visibilityFilter = __webpack_require__(/*! ./visibilityFilter */ 231);
+	
+	var _visibilityFilter2 = _interopRequireDefault(_visibilityFilter);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var todoApp = (0, _redux.combineReducers)({ todos: _todos2.default });
+	var todoApp = (0, _redux.combineReducers)({ todos: _todos2.default, visibilityFilter: _visibilityFilter2.default });
 	exports.default = todoApp;
 
 /***/ },
@@ -24592,6 +24597,13 @@
 	    id: id
 	  };
 	};
+	
+	var setVisibilityFilter = exports.setVisibilityFilter = function setVisibilityFilter(filter) {
+	  return {
+	    type: 'SET_VISIBIRITY_FILTER',
+	    filter: filter
+	  };
+	};
 
 /***/ },
 /* 226 */
@@ -24618,6 +24630,10 @@
 	
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 	
+	var _Footer = __webpack_require__(/*! ./Footer */ 232);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var App = function App() {
@@ -24625,7 +24641,8 @@
 	    'div',
 	    null,
 	    _react2.default.createElement(_AddTodo2.default, null),
-	    _react2.default.createElement(_VisibleTodoList2.default, null)
+	    _react2.default.createElement(_VisibleTodoList2.default, null),
+	    _react2.default.createElement(_Footer2.default, null)
 	  );
 	};
 	
@@ -24654,14 +24671,27 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var getVisibleTodos = function getVisibleTodos(todos, filter) {
+	  switch (filter) {
+	    case 'SHOW_ALL':
+	      return todos;
+	    case 'SHOW_COMPLETED':
+	      return todos.filter(function (t) {
+	        return t.completed;
+	      });
+	    case 'SHOW_ACTIVE':
+	      return todos.filter(function (t) {
+	        return !t.completed;
+	      });
+	  }
+	};
 	var mapStateToProps = function mapStateToProps(state) {
-	  return { todos: state.todos };
+	  return { todos: getVisibleTodos(state.todos, state.visibilityFilter) };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
 	    onTodoClick: function onTodoClick(id) {
-	      console.log(id);
 	      dispatch((0, _actions.toggleTodo)(id));
 	    }
 	  };
@@ -24813,6 +24843,175 @@
 	AddTodo = (0, _reactRedux.connect)()(AddTodo);
 	
 	exports.default = AddTodo;
+
+/***/ },
+/* 231 */
+/*!*********************************************!*\
+  !*** ./src/js/reducers/visibilityFilter.js ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var visibilityFilter = function visibilityFilter() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case 'SET_VISIBIRITY_FILTER':
+	      return action.filter;
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = visibilityFilter;
+
+/***/ },
+/* 232 */
+/*!*************************************!*\
+  !*** ./src/js/components/Footer.js ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _FilterLink = __webpack_require__(/*! ../containers/FilterLink */ 234);
+	
+	var _FilterLink2 = _interopRequireDefault(_FilterLink);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Footer = function Footer() {
+	  return _react2.default.createElement(
+	    'p',
+	    null,
+	    'Show:',
+	    " ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_ALL' },
+	      'All'
+	    ),
+	    ", ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_ACTIVE' },
+	      'Active'
+	    ),
+	    ", ",
+	    _react2.default.createElement(
+	      _FilterLink2.default,
+	      { filter: 'SHOW_COMPLETED' },
+	      'Completed'
+	    )
+	  );
+	};
+	
+	exports.default = Footer;
+
+/***/ },
+/* 233 */
+/*!***********************************!*\
+  !*** ./src/js/components/Link.js ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Link = function Link(_ref) {
+	  var children = _ref.children,
+	      _onClick = _ref.onClick,
+	      active = _ref.active;
+	
+	  if (active) {
+	    return _react2.default.createElement(
+	      "span",
+	      null,
+	      children
+	    );
+	  }
+	  return _react2.default.createElement(
+	    "a",
+	    { href: "#",
+	      onClick: function onClick(e) {
+	        e.preventDefault();
+	        _onClick();
+	      }
+	    },
+	    children
+	  );
+	};
+	
+	Link.PropTypes = {
+	  children: _react.PropTypes.node.isRequired,
+	  onClick: _react.PropTypes.func.isRequired,
+	  active: _react.PropTypes.bool.isRequired
+	};
+	
+	exports.default = Link;
+
+/***/ },
+/* 234 */
+/*!*****************************************!*\
+  !*** ./src/js/containers/FilterLink.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
+	
+	var _actions = __webpack_require__(/*! ../actions */ 225);
+	
+	var _Link = __webpack_require__(/*! ../components/Link */ 233);
+	
+	var _Link2 = _interopRequireDefault(_Link);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state, ownProps) {
+	  return {
+	    active: ownProps.filter === state.visibilityFilter
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+	  return {
+	    onClick: function onClick() {
+	      dispatch((0, _actions.setVisibilityFilter)(ownProps.filter));
+	    }
+	  };
+	};
+	
+	var FilterLink = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Link2.default);
+	
+	exports.default = FilterLink;
 
 /***/ }
 /******/ ]);
