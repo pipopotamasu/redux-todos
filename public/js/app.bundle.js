@@ -63,21 +63,21 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
+	var _actions = __webpack_require__(/*! ./actions */ 225);
+	
 	var _App = __webpack_require__(/*! ./components/App */ 226);
 	
 	var _App2 = _interopRequireDefault(_App);
-	
-	var _actions = __webpack_require__(/*! ./actions */ 230);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var store = (0, _redux.createStore)(_reducers2.default);
 	
-	store.dispatch((0, _actions.addTodo)('Hello React!'));
-	store.dispatch((0, _actions.addTodo)('Hello Redux!'));
-	store.dispatch((0, _actions.toggleTodo)(0));
-	
-	console.log(store.getState());
+	// store.dispatch(addTodo('hoge'))
+	// store.dispatch(toggleTodo(0))
+	// store.dispatch(setVisibilityFilter('SHOW_COMPLETED'))
+	// store.dispatch(addTodo('hoge'))
+	// console.log(store.getState())
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -24508,7 +24508,7 @@
 	
 	var _todos2 = _interopRequireDefault(_todos);
 	
-	var _visibilityFilter = __webpack_require__(/*! ./visibilityFilter */ 225);
+	var _visibilityFilter = __webpack_require__(/*! ./visibilityFilter */ 231);
 	
 	var _visibilityFilter2 = _interopRequireDefault(_visibilityFilter);
 	
@@ -24572,9 +24572,9 @@
 
 /***/ },
 /* 225 */
-/*!*********************************************!*\
-  !*** ./src/js/reducers/visibilityFilter.js ***!
-  \*********************************************/
+/*!*********************************!*\
+  !*** ./src/js/actions/index.js ***!
+  \*********************************/
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24582,19 +24582,28 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var visibilityFilter = function visibilityFilter() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    case 'SET_VISIBILITY_FILTER':
-	      return action.filter;
-	    default:
-	      return state;
-	  }
+	var nextTodoId = 0;
+	var addTodo = exports.addTodo = function addTodo(text) {
+	  return {
+	    type: 'ADD_TODO',
+	    id: nextTodoId++,
+	    text: text
+	  };
 	};
 	
-	exports.default = visibilityFilter;
+	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
+	  return {
+	    type: 'TOGGLE_TODO',
+	    id: id
+	  };
+	};
+	
+	var setVisibilityFilter = exports.setVisibilityFilter = function setVisibilityFilter(filter) {
+	  return {
+	    type: 'SET_VISIBIRITY_FILTER',
+	    filter: filter
+	  };
+	};
 
 /***/ },
 /* 226 */
@@ -24617,7 +24626,7 @@
 	
 	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
 	
-	var _AddTodo = __webpack_require__(/*! ../containers/AddTodo */ 231);
+	var _AddTodo = __webpack_require__(/*! ../containers/AddTodo */ 230);
 	
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 	
@@ -24658,7 +24667,7 @@
 	
 	var _TodoList2 = _interopRequireDefault(_TodoList);
 	
-	var _actions = __webpack_require__(/*! ../actions */ 230);
+	var _actions = __webpack_require__(/*! ../actions */ 225);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -24676,7 +24685,6 @@
 	      });
 	  }
 	};
-	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return { todos: getVisibleTodos(state.todos, state.visibilityFilter) };
 	};
@@ -24689,6 +24697,7 @@
 	  };
 	};
 	
+	// TodoListのPropsとして、stateのtodosを渡せるようにしている
 	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_TodoList2.default);
 	exports.default = VisibleTodoList;
 
@@ -24772,58 +24781,21 @@
 	    'li',
 	    {
 	      onClick: onClick,
-	      style: { textDecoration: completed ? 'line-through' : 'none' }
-	    },
+	      style: { textDecoration: completed ? 'line-through' : 'none' } },
 	    text
 	  );
 	};
 	
-	Todo.propTypes = {
-	  onClick: _react.PropTypes.func.isRequired,
-	  completed: _react.PropTypes.bool.isRequired,
-	  text: _react.PropTypes.string.isRequired
+	Todo.PropTypes = {
+	  text: _react.PropTypes.string.isRequired,
+	  completed: _react.PropTypes.string.isRequired,
+	  onClick: _react.PropTypes.func.isRequired
 	};
 	
 	exports.default = Todo;
 
 /***/ },
 /* 230 */
-/*!*********************************!*\
-  !*** ./src/js/actions/index.js ***!
-  \*********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var nextTodoId = 0;
-	
-	var addTodo = exports.addTodo = function addTodo(text) {
-	  return {
-	    type: 'ADD_TODO',
-	    id: nextTodoId++,
-	    text: text
-	  };
-	};
-	
-	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
-	  return {
-	    type: 'TOGGLE_TODO',
-	    id: id
-	  };
-	};
-	
-	var setVisibilityFilter = exports.setVisibilityFilter = function setVisibilityFilter(filter) {
-	  return {
-	    type: 'SET_VISIBILITY_FILTER',
-	    filter: filter
-	  };
-	};
-
-/***/ },
-/* 231 */
 /*!**************************************!*\
   !*** ./src/js/containers/AddTodo.js ***!
   \**************************************/
@@ -24841,7 +24813,7 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _actions = __webpack_require__(/*! ../actions */ 230);
+	var _actions = __webpack_require__(/*! ../actions */ 225);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -24867,8 +24839,36 @@
 	  );
 	};
 	
+	// storeに格納してあるdispatchオブジェクトを使用可能にしている
 	AddTodo = (0, _reactRedux.connect)()(AddTodo);
+	
 	exports.default = AddTodo;
+
+/***/ },
+/* 231 */
+/*!*********************************************!*\
+  !*** ./src/js/reducers/visibilityFilter.js ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var visibilityFilter = function visibilityFilter() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case 'SET_VISIBIRITY_FILTER':
+	      return action.filter;
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = visibilityFilter;
 
 /***/ },
 /* 232 */
@@ -24887,7 +24887,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _FilterLink = __webpack_require__(/*! ../containers/FilterLink */ 233);
+	var _FilterLink = __webpack_require__(/*! ../containers/FilterLink */ 234);
 	
 	var _FilterLink2 = _interopRequireDefault(_FilterLink);
 	
@@ -24923,6 +24923,57 @@
 
 /***/ },
 /* 233 */
+/*!***********************************!*\
+  !*** ./src/js/components/Link.js ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Link = function Link(_ref) {
+	  var children = _ref.children,
+	      _onClick = _ref.onClick,
+	      active = _ref.active;
+	
+	  if (active) {
+	    return _react2.default.createElement(
+	      "span",
+	      null,
+	      children
+	    );
+	  }
+	  return _react2.default.createElement(
+	    "a",
+	    { href: "#",
+	      onClick: function onClick(e) {
+	        e.preventDefault();
+	        _onClick();
+	      }
+	    },
+	    children
+	  );
+	};
+	
+	Link.PropTypes = {
+	  children: _react.PropTypes.node.isRequired,
+	  onClick: _react.PropTypes.func.isRequired,
+	  active: _react.PropTypes.bool.isRequired
+	};
+	
+	exports.default = Link;
+
+/***/ },
+/* 234 */
 /*!*****************************************!*\
   !*** ./src/js/containers/FilterLink.js ***!
   \*****************************************/
@@ -24936,16 +24987,18 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _actions = __webpack_require__(/*! ../actions */ 230);
+	var _actions = __webpack_require__(/*! ../actions */ 225);
 	
-	var _Link = __webpack_require__(/*! ../components/Link */ 234);
+	var _Link = __webpack_require__(/*! ../components/Link */ 233);
 	
 	var _Link2 = _interopRequireDefault(_Link);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state, ownProps) {
-	  return { active: ownProps.filter === state.visibilityFilter };
+	  return {
+	    active: ownProps.filter === state.visibilityFilter
+	  };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
@@ -24959,58 +25012,6 @@
 	var FilterLink = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Link2.default);
 	
 	exports.default = FilterLink;
-
-/***/ },
-/* 234 */
-/*!***********************************!*\
-  !*** ./src/js/components/Link.js ***!
-  \***********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Link = function Link(_ref) {
-	  var active = _ref.active,
-	      children = _ref.children,
-	      _onClick = _ref.onClick;
-	
-	  if (active) {
-	    return _react2.default.createElement(
-	      'span',
-	      null,
-	      children
-	    );
-	  }
-	
-	  return _react2.default.createElement(
-	    'a',
-	    { href: '#',
-	      onClick: function onClick(e) {
-	        e.preventDefault();
-	        _onClick();
-	      }
-	    },
-	    children
-	  );
-	};
-	
-	Link.propTypes = {
-	  active: _react.PropTypes.bool.isRequired,
-	  children: _react.PropTypes.node.isRequired,
-	  onClick: _react.PropTypes.func.isRequired
-	};
-	
-	exports.default = Link;
 
 /***/ }
 /******/ ]);
