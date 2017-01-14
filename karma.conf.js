@@ -18,7 +18,7 @@ module.exports = function(config) {
     // テスト対象ファイルとテストファイルを指定する
     files: [
     	'src/js/app/app.js',
-    	'tests/js/app/*Spec.js'
+    	'tests/**/*Spec.js'
     ],
 
 
