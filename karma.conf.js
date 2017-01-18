@@ -17,6 +17,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     // テスト対象ファイルとテストファイルを指定する
     files: [
+      './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       'tests/*_test.js',
     	'tests/**/*_test.js'
     ],
