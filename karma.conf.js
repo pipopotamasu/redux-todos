@@ -11,7 +11,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -46,7 +46,7 @@ module.exports = function(config) {
             exclude: /node_modules/,
             loader: 'babel-loader',
             query: {
-              presets: ['es2015'],
+              presets: ['es2015', 'react'],
               plugins: ['babel-plugin-espower']
             }
           },
