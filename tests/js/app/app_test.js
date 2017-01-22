@@ -9,7 +9,7 @@ describe('Cat', () => {
 
   describe("greet()", () => {
     it("挨拶をする", () => {
-      assert.equal(tama.greet(), 'Nyaaaan! I am neko');
+      assert.equal(tama.greet(), 'Nyaaaan! I am tama');
     });
   });
 });
